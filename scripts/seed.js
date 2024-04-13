@@ -160,6 +160,24 @@ async function seedRevenue(client) {
   }
 }
 
+async function deleteDefaultUser(client) {
+  try {
+    // Create the "users" table if it doesn't exist
+    const deleteDefaultUser = await client.sql`
+      DELETE FROM users WHERE email = ${users[0].email};
+    `;
+
+    console.log(`Seeded ${deleteDefaultUser} user deleted`);
+
+    return {
+      user: deleteDefaultUser,
+    };
+  } catch (error) {
+    console.error('Error seeding default user delete:', error);
+    throw error;
+  }
+}
+
 async function main() {
   const client = await db.connect();
 
@@ -167,6 +185,7 @@ async function main() {
   await seedCustomers(client);
   await seedInvoices(client);
   await seedRevenue(client);
+  await deleteDefaultUser(client);
 
   await client.end();
 }
